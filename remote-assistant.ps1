@@ -1,3 +1,7 @@
+#https://github.com/HeiligerMax
+#Licensed under GNU General Public License v3.0
+
+#Integrate Windows Forms
 Add-Type -AssemblyName System.Windows.Forms
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
