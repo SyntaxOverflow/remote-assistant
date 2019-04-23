@@ -23,12 +23,12 @@ $Form.StartPosition = "CenterScreen"
 $Form.KeyPreview = $True
 $Form.Add_KeyDown({if($_.KeyCode -eq 'Enter'){$Button.PerformClick()}})
 
-$Input = New-Object System.Windows.Forms.ComboBox
-$Input.Location = New-Object System.Drawing.Point(5,5)
-$Input.Size = New-Object System.Drawing.Size(290,30)
-$Input.Font = "Microsoft Sans Serif,12"
-$Input.Text = ""
-$Input.MaxDropDownItems = "25"
+$InputField = New-Object System.Windows.Forms.ComboBox
+$InputField.Location = New-Object System.Drawing.Point(5,5)
+$InputField.Size = New-Object System.Drawing.Size(290,30)
+$InputField.Font = "Microsoft Sans Serif,12"
+$InputField.Text = ""
+$InputField.MaxDropDownItems = "25"
 
 $Button = New-Object System.Windows.Forms.Button
 $Button.Location = New-Object System.Drawing.Point(5,40)
@@ -44,18 +44,18 @@ $Status.TextAlign = "MiddleCenter"
 $Status.Font = "Microsoft Sans Serif,12"
 $Status.Text = "Ready"
 
-$Form.Controls.AddRange(@($Input,$Button,$Status))
+$Form.Controls.AddRange(@($InputField,$Button,$Status))
 
 #---function---
 function letsgo{
-    $Search = $Input.Text
+    $Search = $InputField.Text
     $Status.Text = "Searching for PC"
     $PC = Get-ADComputer -Filter "Name -like '*$Search*'" | Select-Object -ExpandProperty Name
 
     if($PC.Count -gt 1){
         $Status.Text = "More than one PC found"
-        $PC | foreach{$Input.Items.Add($_)}
-        $Input.Text = "Please select PC"
+        $PC | foreach{$InputField.Items.Add($_)}
+        $InputField.Text = "Please select PC"
         return
     }elseif($PC -eq $null){
         $Status.Text = "No PC found. Connect anyway. (IP-Address?)"
@@ -63,13 +63,13 @@ function letsgo{
         return
     }
 
-    $Input.Text = "$PC"
+    $InputField.Text = "$PC"
     $Status.Text = "Testing Connection"
     if(Test-NetConnection -ComputerName $PC -InformationLevel Quiet){
         $Status.Text = "Connecting..."
         msra.exe /offerra $PC
-        $Input.Items.Clear()
-        $Input.Text =""
+        $InputField.Items.Clear()
+        $InputField.Text =""
         $Status.Text = "Ready"
     }else{
         $Status.Text = "$PC not reachable!"
