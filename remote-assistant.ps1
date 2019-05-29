@@ -15,7 +15,7 @@ Add-Type -AssemblyName PresentationFramework
 <Window x:Name="Window"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Remote-Assistent" Width="300" Height="200" WindowStartupLocation="CenterScreen" FontFamily="Microsoft Sans Serif" FontSize="16" SizeToContent="Height" ResizeMode="CanMinimize" MinWidth="300" MinHeight="100">
+        Title="Remote-Assistant" Width="300" Height="200" WindowStartupLocation="CenterScreen" FontFamily="Microsoft Sans Serif" FontSize="16" SizeToContent="Height" ResizeMode="CanMinimize" MinWidth="300" MinHeight="100">
     <Grid>
         <ComboBox x:Name="InputField" Margin="10,10,10,0" Padding="5" IsEditable="True" VerticalAlignment="Top" ToolTip="The whole or part of Computername"/>
         <Button x:Name="Button" Content="Search and connect" Margin="10,50,10,0" Padding="5" VerticalAlignment="Top" IsDefault="True" ToolTip="Search for the Computername in AD"/>
