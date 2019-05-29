@@ -5,3 +5,5 @@ When a PC is found, the connection is initiated. If more than one PC is found, a
 If the computer name was not found in the AD, a connection to the "raw" input is established. E.g. for an IP address
 
 The script itself starts the Windows own remote support program "msra.exe".
+
+![Screenshot](https://github.com/HeiligerMax/remote-assistant/blob/master/screenshot.PNG)
