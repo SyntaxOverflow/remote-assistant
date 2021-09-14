@@ -8,6 +8,7 @@ public static extern IntPtr GetConsoleWindow();
 [DllImport("user32.dll")]
 public static extern bool ShowWindow(IntPtr hWnd, Int32 nCmdShow);
 '
+$consolePtr = [Console.Window]::GetConsoleWindow()
 ###
 #Add WPF
 Add-Type -AssemblyName PresentationFramework
@@ -15,12 +16,12 @@ Add-Type -AssemblyName PresentationFramework
 <Window x:Name="Window"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Remote-Assistant" Width="300" Height="200" WindowStartupLocation="CenterScreen" FontFamily="Microsoft Sans Serif" FontSize="16" SizeToContent="Height" ResizeMode="CanMinimize" MinWidth="300" MinHeight="100">
-    <Grid>
-        <ComboBox x:Name="InputField" Margin="10,10,10,0" Padding="5" IsEditable="True" VerticalAlignment="Top" ToolTip="The whole or part of Computername"/>
-        <Button x:Name="Button" Content="Search and connect" Margin="10,50,10,0" Padding="5" VerticalAlignment="Top" IsDefault="True" ToolTip="Search for the Computername in AD"/>
-        <TextBox x:Name="OutputField" Margin="10,90,10,10" Padding="5" TextWrapping="Wrap" Text="Ready" HorizontalContentAlignment="Center" IsReadOnly="True" ToolTip="https://github.com/HeiligerMax"/>
-    </Grid>
+        Title="Remote-Assistant" Width="300" WindowStartupLocation="CenterScreen" FontFamily="Microsoft Sans Serif" FontSize="16" SizeToContent="Height" WindowStyle="ToolWindow" ResizeMode="NoResize">
+    <StackPanel>
+        <ComboBox x:Name="InputField" Margin="5" Padding="5" IsEditable="True" VerticalAlignment="Top" ToolTip="The whole or part of Hostname"/>
+        <Button x:Name="Button" Content="Search and connect" Margin="5" Padding="5" VerticalAlignment="Top" IsDefault="True" ToolTip="Search for the Hostname in AD"/>
+        <TextBox x:Name="OutputField" Margin="5" Padding="5" TextWrapping="Wrap" Text="Ready" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsReadOnly="True"/>
+    </StackPanel>
 </Window>
 "@
 $reader = (New-Object System.Xml.XmlNodeReader $xaml)
@@ -33,18 +34,23 @@ $Button.Add_Click{(offerra)}
 ###
 function offerra{
     $Search = $InputField.Text
-    $OutputField.Text = "Suche nach APC"
+    if([string]::IsNullOrWhiteSpace($InputField.Text)){
+        $OutputField.Text = "No input"
+        return
+    }
+
+    $OutputField.Text = "Looking for computer"
     $PC = Get-ADComputer -Filter "Name -like '*$Search*'" | Select-Object -ExpandProperty Name
 
     if($PC.Count -gt 1){
-        $OutputField.Text += "`r`nMore than one Computer found"
+        $OutputField.Text += "`r`nMore than one computer found"
         $PC | ForEach-Object{$InputField.Items.Add($_)}
-        $InputField.Text = "Please select Computer"
+        $InputField.Text = "Please select a computer"
         $InputField.IsDropDownOpen = $true
         return
     }elseif($null -eq $PC){
         $OutputField.Text += "`r`nNo Computer found."
-        $BoxAntwort = [System.Windows.MessageBox]::Show("No Computer found!`r`nConnect to $Search anyway?",":(","YesNo","Error")
+        $BoxAntwort = [System.Windows.MessageBox]::Show("No computer found!`r`nConnect to $Search anyway?",":(","YesNo","Error")
         if($BoxAntwort -eq "Yes"){
             $OutputField.Text += "`r`Connecting"
             msra.exe /offerra $Search
@@ -67,7 +73,6 @@ function offerra{
 }
 ###
 #Hide Powershell when GUI appears and bring it back if GUI gets closed
-$consolePtr = [Console.Window]::GetConsoleWindow()
-[Console.Window]::ShowWindow($consolePtr, 0)
-$window.ShowDialog() | Out-Null
-[Console.Window]::ShowWindow($consolePtr, 4)
+[void][Console.Window]::ShowWindow($consolePtr, 0)
+[void]$window.ShowDialog()
+[void][Console.Window]::ShowWindow($consolePtr, 4)
