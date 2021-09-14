@@ -6,4 +6,4 @@ If the computer name was not found in the AD, a connection to the "raw" input is
 
 The script itself starts the Windows own remote support program "msra.exe".
 
-![Screenshot](https://github.com/HeiligerMax/remote-assistant/blob/master/screenshot.PNG)
+![Screenshot](https://github.com/SyntaxOverflow/remote-assistant/blob/master/screenshot.png)
